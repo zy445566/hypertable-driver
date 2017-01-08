@@ -16,7 +16,49 @@ http://www.hypertable.com/documentation/reference_manual/thrift_api
 
 # instructions & example
 
+##hyperTableClient
+```node
+var HyperTableDriver = require('hypertable-driver');
+var htConfig = {
+	host:'121.43.190.15',
+	port:15867,
+	timeout:3000 //option
+};
+var hyperTableClient = new HyperTableDriver.HyperTableClient(htConfig);
+var client = hyperTableClient.getClient();
+```
+
+
+##HyperTableNameSpace
+```node
+var hyperTableNameSpace = new HyperTableDriver.HyperTableNameSpace(client);
+
+hyperTableNameSpace.namespace_exists('test').then((result) => {
+ console.log(result);
+});
+
+hyperTableNameSpace.namespace_create('test').then((result) => {
+	//this is async,attention!
+	console.log(result);
+});
+
+var namespace = null;
+hyperTableNameSpace.namespace_open('/')
+.then((result) => {
+	namespace = result;
+	return hyperTableNameSpace.namespace_get_listing(namespace);
+})
+.then((list)=>{
+	console.log(list);
+	return hyperTableNameSpace.namespace_close(namespace);
+})
+.then((result)=>{
+	console.log(result);
+});
+```
+
 ##HyperTableTable
+
 ```node
 var namespace = null;
 var hyperTableTable = null;
